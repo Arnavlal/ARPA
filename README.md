@@ -12,7 +12,7 @@ ARPA utilizes the amio acid residue counts of proteins for pangenomic protein cl
 In current version, clustering ("-dsp") has been the primary focus.
 
 
-### Installation and Dependencies
+## Installation and Dependencies
 * [Python3.x](https://www.python.org/downloads/)
 * NumPy
 * SciPy (Scipy.cluster)
@@ -29,7 +29,7 @@ $chmod +x *.py
 $export PATH=$PATH:/path/to/folder/having/ARPA
 ```
 
-###Command-line Options
+### Command-line Options
 
 ```
 usage: ARPA.py [-h] [-v] [-ct CLUSTER_THRESHOLD] [-m METRIC] [-dsp] [-ld] [-ni NEIGHBORHOOD_IDENTITY] [-nt NEIGHBORHOOD_THRESH]
@@ -55,4 +55,12 @@ optional arguments:
                         threshold of genes to be reclustered in neighborhood analysis [Default: 0.7]
   -nt NEIGHBORHOOD_THRESH, --neighborhood_thresh NEIGHBORHOOD_THRESH
                         threshold of genes conserved within neighborhood (out of 10) [Default: 3]
+  ```
+  
+  
+### Common Errors
+The most common observed arror is the addition of non-".faa" files to the genome directory. Doing so will result in error, and this may be especially true for Mac users, wherein a ".DS_Store" hidden file may be added. Proceed to the directory (use ls -a to see contents of directory) and remove the ".DA_store" file:
+  ```
+  cd /path/to/folder/having/ARPA_genomes
+  rm .DS_Store
   ```
