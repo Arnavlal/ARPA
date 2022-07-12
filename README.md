@@ -72,16 +72,27 @@ optional arguments:
   -nt NEIGHBORHOOD_THRESH, --neighborhood_thresh NEIGHBORHOOD_THRESH
                         threshold of genes conserved within neighborhood (out of 10) [Default: 3]
   ```
+### Input 
+ARPA requires an input folder of “.faa” processed amino acid files corresponding to sequenced genomes. Refer to the folder when directing the ARPA code to the set of genomes to construct the pangenome (i.e., "/path/to/folder/with/genomes/"  but NOT "/path/to/folder/with/genomes/*.faa") Encoded proteins are converted into a 1-by-20 row vector (vRC) with each term corresponding to the number of specific amino acid residues present within the sequence. These 20 numbers will be used identify encoded genes during pangenome clustering. ARPA then  compresses the database by removing proteins with identical VRCs. 
+
+### Clustering
+ARPA clusters genomes using a bulk single linkage clustering (see preprint for details: [bioRxiv](https://doi.org/10.1101/2022.06.03.494761)). Clustered proteins can be listed if desired using the "-check_clusters" option, especially if using [WhatsGNU](https://doi.org/10.1186/s13059-020-01965-w) [modified files](https://github.com/ahmedmagds/WhatsGNU#command-line-options-for-whatsgnu_database_customizerpy) to compare against [Roary](https://doi.org/10.1093/bioinformatics/btv421).  The default use of a 95% threshold of protein similarity is used unless another value is specificied.
+
+### Paralog Separation [Preliminary]
+Paralog separation can also be performed, in a preliminary manner. This involves the separation of paralogous groups through analysis of conserved gene neighborhoods. ARPA uses pre-built clusters from homolog clustering as a starting point for neighborhood analysis. ARPA identifies neighborhoods for all homologs (as opposed to only splitting paralogous groups only when a single genome contains multiple homologs) and splits them into paralogous groups when their neighborhoods differ. While time intensive, this separation strategy avoids missed paralogous copies that could result from differential loss of paralogs in each genome. In comparing neighborhhoods, a similar method of clustering is utilized, with a user-defined value of neighborhood identity (default 70% gene vRCS identity and  >3 of 10 neighborhood genes are similar to be orthologs). 
+
+### Outputs
+ARPA presents three output files, two of which are visualizations of the pangenome. The most data-rich output is a “.csv” (or “.pickle” for large pangenomics) file, which lists proteins, labelled with observed protein identifiers, and a pangenome output table. The pangenomes table reports the presence or absence of proteins but also lists the “allele deviation scores,” which is calculated as the number of residues different from the protein sequence that is most represented within the homolog group. This output can be utilized within a program like [Scoary](https://doi.org/10.1186/s13059-016-1108-8) or can be modified for phylogenetics (see [bioRxiv preprint](https://doi.org/10.1101/2022.06.03.494761), Fig 3). Non-large database analyses will cluster the visual pangenome into a most similar genomes to reveal patterns within similar genomes through the use of dendogram based solely upon the presence and absence of genes. 
+
   
-  
-### Verification Code
+## Verification Code
 Benchmarking and analytic code is provided within the zipped folder "ARPA_Verification"
 Use these codes to recreate analytic and benchmarking results. One of the four codes is a CLI script ("ARPA_Blast_Analysis.py"). For the remaining code, substitute pathways asscociated with your computer into the required subsections and run the code within an IDE (like Spyder). 
 
 
 
-### Common Errors
-Section in continuous change
+## Common Errors
+Section in change, with errors that will be worked on to be resolved or avoided in the future. 
 
 The most common observed arror is the addition of non-".faa" files to the genome directory. Doing so will result in error, and this may be especially true for Mac users, wherein a ".DS_Store" hidden file may be added to the folder. Proceed to the directory (use ls -a to see contents of directory) and remove the ".DS_store" file:
   ```
