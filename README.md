@@ -1,7 +1,12 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 # ARPA: Alignment-Free Residue Pangenome Analysis
-By: Arnav Lal, Ahmed Moustafa, and Paul J. Planet
+**Arnav Lal, Ahmed Moustafa, and Paul J. Planet**
+
+- University of Pennsylvania, Philadelphia, PA 19104, USA
+- Perelman School of Medicine, University of Pennsylvania, Philadelphia, PA 19104, USA
+- Children's Hospital of Philadelphia, Philadelphia, PA 19104, USA
+- Sackler Institute for Comparative Genomics, American Museum of Natural History, New York, NY 10024, USA
 
 <img width="1128" alt="Screen Shot 2022-05-07 at 2 26 53 678PM" src="https://user-images.githubusercontent.com/66033960/167267136-a3e3d491-bcb0-4f95-8c36-2b286d2f2ddd.png">
 
@@ -9,7 +14,17 @@ By: Arnav Lal, Ahmed Moustafa, and Paul J. Planet
 ## Introduction
 ARPA utilizes the amio acid residue counts of proteins for pangenomic protein clustering. <br/>
 
-In current version, clustering ("-dsp") has been the primary focus.
+<img width="1724" alt="Graphical_Summary" src="https://user-images.githubusercontent.com/66033960/178545390-c41fb071-a489-49c6-af43-f1364035b508.png">
+
+**Workflow of Pangenome Construction.**
+
+Amino acid sequences from imported genomes (.faa files) are compressed to yield unique alleles. Subsequent encoded genes are iteratively clustered through bulk single linkage clustering by comparing residue counts (vRC), with cluster boundaries relying upon biological differences in vRCs of different proteins. Resulting homologous proteins are separated by comparing gene neighborhoods, through a process that utilizes results from the prior clustering step, to yield orthologous groups.
+
+In current version, clustering ("-dsp") has been the primary focus over paralog separation.
+
+## Literature
+
+A preprint of ARPA covering motivation, benchmarking and applications is available on bioRxiv at DOI: [10.1101/2022.06.03.494761](https://doi.org/10.1101/2022.06.03.494761)
 
 
 ## Installation and Dependencies
