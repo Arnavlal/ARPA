@@ -20,7 +20,7 @@ ARPA utilizes the amio acid residue counts of proteins for pangenomic protein cl
 
 Amino acid sequences from imported genomes (.faa files) are compressed to yield unique alleles. Subsequent encoded genes are iteratively clustered through bulk single linkage clustering by comparing residue counts (vRC), with cluster boundaries relying upon biological differences in vRCs of different proteins. Resulting homologous proteins are separated by comparing gene neighborhoods, through a process that utilizes results from the prior clustering step, to yield orthologous groups.
 
-In current version, clustering ("-dsp") has been the primary focus over paralog separation.
+**In current first version of ARPA, clustering ("-dsp") has been the primary focus over paralog separation.**
 
 ## Literature
 
@@ -47,7 +47,8 @@ $export PATH=$PATH:/path/to/folder/having/ARPA
 ### Command-line Options
 
 ```
-usage: ARPA.py [-h] [-v] [-ct CLUSTER_THRESHOLD] [-m METRIC] [-dsp] [-ld] [-ni NEIGHBORHOOD_IDENTITY] [-nt NEIGHBORHOOD_THRESH]
+usage: ARPA.py [-h] [-v] [-ct CLUSTER_THRESHOLD] [-dsp] [-cc] [-ld] [-ni NEIGHBORHOOD_IDENTITY]
+               [-nt NEIGHBORHOOD_THRESH]
                sequences_folder
 
 Alignment-Free Residue Pangenomic Analysis
@@ -60,12 +61,12 @@ optional arguments:
   -v, --version         print version and exit
   -ct CLUSTER_THRESHOLD, --cluster_threshold CLUSTER_THRESHOLD
                         threshold of similarity used in homolog clustering [Default: 0.95]
-  -m METRIC, --metric METRIC
-                        metric for genes: 'mr' diff. From most represented, 'aa' diff. from all alleles, 'aan' diff. from all
-                        alleles normalized by counts [Default: 'mr']
   -dsp, --dont_split_paralogs
                         Do not split paralogous groups (no neighborhood analysis)
-  -ld, --large_dataset  Dendogram sorting step avoided, full image not printed, and pangenome file saved as Pickle file, not CSV
+  -cc, --check_clusters
+                        Report the clustered proteins through their identifiers
+  -ld, --large_dataset  Dendogram sorting step avoided, full image not printed, and pangenome file saved as
+                        Pickle file, not CSV
   -ni NEIGHBORHOOD_IDENTITY, --neighborhood_identity NEIGHBORHOOD_IDENTITY
                         threshold of genes to be reclustered in neighborhood analysis [Default: 0.7]
   -nt NEIGHBORHOOD_THRESH, --neighborhood_thresh NEIGHBORHOOD_THRESH
@@ -73,6 +74,10 @@ optional arguments:
   ```
   
   
+### Verification Code
+Benchmarking and analytic code is provided within the zipped folder "ARPA_Verification."
+
+
 ### Common Errors
 The most common observed arror is the addition of non-".faa" files to the genome directory. Doing so will result in error, and this may be especially true for Mac users, wherein a ".DS_Store" hidden file may be added. Proceed to the directory (use ls -a to see contents of directory) and remove the ".DS_store" file:
   ```
