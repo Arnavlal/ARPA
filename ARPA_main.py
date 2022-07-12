@@ -53,17 +53,17 @@ PARSER.add_argument(
 )
 
 PARSER.add_argument(
-    "-m",
-    "--metric",
-    type=str,
-    help="metric for genes: 'mr' diff. From most represented, 'aa' diff. from all alleles, 'aan' diff. from all alleles normalized by counts [Default: 'mr']",
-)
-
-PARSER.add_argument(
     "-dsp",
     "--dont_split_paralogs",
     action='store_true',
     help="Do not split paralogous groups (no neighborhood analysis)",
+)
+
+PARSER.add_argument(
+    "-cc",
+    "--check_clusters",
+    action='store_true',
+    help="Report the clustered proteins through their identifiers",
 )
 
 PARSER.add_argument(
@@ -121,9 +121,6 @@ else:
     NTHRES = 2.9
 if NTHRES < 0.0 or NTHRES > 10.0:
     PARSER.exit(status=0, message="Error: neighborhood_thresh values should be in range [0-10]\n")
-if ARGS.metric:
-    if ARGS.metric != "mr" and ARGS.metric != "aa" and ARGS.metric != "aan":
-        PARSER.exit(status=0, message="Error: unrecognized string inputted into metric analysis\n")
 
 
 ###TIMING
@@ -181,11 +178,6 @@ for file in Folder_list:
 AA = ["G","P","A","V","L","I","M","C","F","Y","W","H","K","R","Q","N","E","D","S","T"] #list of Amino Acid Residues
 os.listdir(Folder)
 valid_files =[".faa"] #Look for protein files
-#FIX THIS
-#ONLY LOOK AT FAA FILES NOT .DS_STORE   
-#!!!
-#!!!
-#!!!   
 num_genome = len(os.listdir(Folder))
 def FAAtoNUM(i):
     pathToFile = open(os.path.join(Folder, os.listdir(Folder)[i])) #import file
@@ -204,8 +196,17 @@ def FAAtoSTR(i):
     pathToFile = open(os.path.join(Folder, os.listdir(Folder)[i])) #import file
     allSeqs = []
     for seq_record in SeqIO.parse(pathToFile, """fasta"""):
-        allSeqs.append(str(seq_record.description).split(" ",1)[1].split(" [")[0])
+        allSeqs.append(str(seq_record.description).split(" ",1)[1].split(" [")[0])  
     return allSeqs
+
+def FAAtoID(i):
+    pathToFile = open(os.path.join(Folder, os.listdir(Folder)[i])) #import file
+    allSeqs = []
+    for seq_record in SeqIO.parse(pathToFile, """fasta"""):
+        allSeqs.append(str(seq_record.description).split(" ",1)[0])
+        #allSeqs.append(str(os.listdir(Folder)[i].split("_modified")[0])+"_"+str(seq_record.id).split("|")[1]) #TURN TO ID. with Modificed files. 
+    return allSeqs
+
 print("Finished Initialization: --- %s seconds ---" % (time.time() - start_time)) #TIME: <1 second
 print("[=>-----------------]")
 print(" ")
@@ -229,6 +230,14 @@ for i in np.arange(0,len(os.listdir(Folder))):
     placeholder_names.append(FAAtoSTR(i)) #append each new genome to the list with all gene counts
 placeholder_names.pop(0) #delete the first of list
 cumulative_array_str = np.hstack(placeholder_names)
+
+if ARGS.check_clusters==True:
+    placeholder_id = [0]*1#file to contain all genes (listed with the 20 Amino Acid counts)
+    for i in np.arange(0,len(os.listdir(Folder))):
+        placeholder_id.append(FAAtoID(i)) #append each new genome to the list with all gene counts
+    placeholder_id.pop(0) #delete the first of list
+    cumulative_array_id = np.hstack(placeholder_id)
+    
 
 print("Finished Sequence Import: --- %s seconds ---" % (time.time() - start_time)) #TIME
 print("Imported " +str(len(cumulative_array))+ " encoded genes from "+str(len(os.listdir(Folder)))+" genomes")
@@ -271,9 +280,7 @@ AApangenome  = np.concatenate((AApangenome,AApangenome_hash), axis=1)
 AApangenome  = np.concatenate((AApangenome,np.zeros((len(AApangenome_hash),1))), axis=1)
 AApangenome  = np.concatenate((AApangenome,AApangenome_count), axis=1)
 
-
 del(AApangenome_count)
-del(hash_genome)
 del(hash_genome_translation)
 del(hash_genome_set)
 #%%
@@ -285,7 +292,7 @@ print("[======>------------]")
 print(" ")
 print(" ")
 
-#CLUSTERING OF HOMOLOGOUS GROUPS
+
 breakpoints = np.zeros((1,len(AApangenome)))
 l=1
 val=0
@@ -362,6 +369,24 @@ print("[============>------]")
 print(" ")
 print(" ")
 
+if ARGS.check_clusters==True:
+    import csv
+    tx = np.zeros((len(cumulative_array_id)))
+    for i in np.arange(len(new_arr)):
+        tx[np.where(new_arr[i,20]==hash_genome)[0]] = new_arr[i,21]
+    tx3 = tx.astype(int)
+    tx4 = cumulative_array_id
+    with open(os.path.join(RESULTS_FOLDER,"Clusters_ID.tab"), 'wt') as out_file:
+        tsv_writer = csv.writer(out_file, delimiter='\t')
+        for i in np.arange(1,max(new_arr[:,21])):
+            a = tx4[np.where(tx3 == i)[0]]
+            tsv_writer.writerow(a)
+    print("Saved Clusters File:--- %s seconds ---" % (time.time() - start_time)) 
+    print("Created " +str(l)+" Clusters")
+    print("[============>------]")
+    print(" ")
+    print(" ")
+
 
 diff  = np.diff(new_arr[:,21])
 breakpoints = np.where(diff==1)[0]
@@ -383,22 +408,6 @@ for i in np.arange(new_arr[-1,21]):
 
 print("Generated Allele Scores: --- %s seconds ---" % (time.time() - start_time)) #TIME
 
-#FIX THIS
-#MAKE AS FAST AS MR    
-#!!!
-#!!!
-#!!!    
-if ARGS.metric == "aa":
-    for i in np.arange(new_arr[-1,21]):
-        for j in np.arange(len(new_arr[np.where(new_arr[:,21]==most_represented[int(i),21])[0],22])):
-            new_arr[min(np.where(new_arr[:,21]==most_represented[int(i),21])[0])+j,22] = np.sum(abs(new_arr[min(np.where(new_arr[:,21]==most_represented[int(i),21])[0])+j,0:20]-new_arr[np.where(new_arr[:,21]==most_represented[int(i),21])[0],0:20]))/len(new_arr[np.where(new_arr[:,21]==most_represented[int(i),21])[0],0:20])
-
-if ARGS.metric == "aan":
-    for i in np.arange(new_arr[-1,21]):
-        for j in np.arange(len(new_arr[np.where(new_arr[:,21]==most_represented[int(i),21])[0],22])):
-            new_arr[min(np.where(new_arr[:,21]==most_represented[int(i),21])[0])+j,22] = np.sum(abs(new_arr[min(np.where(new_arr[:,21]==most_represented[int(i),21])[0])+j,0:20]-new_arr[np.where(new_arr[:,21]==most_represented[int(i),21])[0],0:20]))/len(new_arr[np.where(new_arr[:,21]==most_represented[int(i),21])[0],0:20])/most_represented[int(i),0:20]
-
-
 
 test_keys = list(new_arr[:,20])
 test_values = list(new_arr[:,21])
@@ -418,12 +427,6 @@ placeholder = np.zeros((len(seq_info),1))
 placeholder[:,0] = index
 seq_w_genome = np.concatenate((seq_info, placeholder), axis=1)
 
-del(res)
-del(res2)
-del(placeholder)
-del(test_keys)
-del(test_values)
-del(test_values2)
 del(seq_info)
 
 if ARGS.dont_split_paralogs==True:
@@ -495,6 +498,7 @@ if ARGS.dont_split_paralogs==True:
         HG_metadata = Homolog_metadata[:,np.argsort(hcount_nan)] 
         Z = ward(pdist(np.isnan(HG_split_ordered)))
         list_out = leaves_list(Z)
+        #Change below, if you are willing to wait for a dendogram for large datasets:
         #dn = hierarchy.dendrogram(hierarchy.linkage(np.isnan(HG_split_ordered), 'single'), labels=os.listdir(Folder))
         a = os.listdir(Folder)
         a2 = [0] * num_genome
@@ -529,7 +533,7 @@ if ARGS.dont_split_paralogs==True:
 
 #%%
 #%%            
-
+#PARALOG SEPARATION (Preliminary)
 
 #LOOK AT THE GENE NEIGHBORHOOD
 #essentially take the concatenated version of the list of genes within the genome
