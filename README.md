@@ -74,7 +74,7 @@ optional arguments:
   
   
 ### Common Errors
-The most common observed arror is the addition of non-".faa" files to the genome directory. Doing so will result in error, and this may be especially true for Mac users, wherein a ".DS_Store" hidden file may be added. Proceed to the directory (use ls -a to see contents of directory) and remove the ".DA_store" file:
+The most common observed arror is the addition of non-".faa" files to the genome directory. Doing so will result in error, and this may be especially true for Mac users, wherein a ".DS_Store" hidden file may be added. Proceed to the directory (use ls -a to see contents of directory) and remove the ".DS_store" file:
   ```
   cd /path/to/folder/having/ARPA_genomes
   rm .DS_Store
