@@ -18,7 +18,7 @@ ARPA utilizes the amio acid residue counts of proteins for pangenomic protein cl
 
 **Workflow of Pangenome Construction.**
 
-Amino acid sequences from imported genomes (.faa files) are compressed to yield unique alleles. Subsequent encoded genes are iteratively clustered through bulk single linkage clustering by comparing residue counts (vRC), with cluster boundaries relying upon biological differences in vRCs of different proteins. Resulting homologous proteins are separated by comparing gene neighborhoods, through a process that utilizes results from the prior clustering step, to yield orthologous groups.
+Amino acid sequences from imported genomes (.faa files) are compressed to yield unique alleles. Subsequent encoded genes are iteratively clustered through bulk single linkage clustering by comparing residue counts (vRC; a 20-value vectors in which each term is the total number of each of the 20 amino acid), with cluster boundaries relying upon biological differences in vRCs of different proteins. Resulting homologous proteins are separated by comparing gene neighborhoods, through a process that utilizes results from the prior clustering step, to yield orthologous groups.
 
 **In current first version of ARPA, clustering ("-dsp") has been the primary focus over paralog separation.**
 
@@ -39,9 +39,9 @@ A preprint of ARPA covering motivation, benchmarking and applications is availab
 
 ```
 $git clone https://github.com/Arnavlal/ARPA
-$cd ARPA
+$cd ARPA/bin
 $chmod +x *.py
-$export PATH=$PATH:/path/to/folder/having/ARPA
+$export PATH=$PATH:/path/to/folder/having/ARPA/bin
 ```
 
 ### Command-line Options
@@ -75,11 +75,15 @@ optional arguments:
   
   
 ### Verification Code
-Benchmarking and analytic code is provided within the zipped folder "ARPA_Verification."
+Benchmarking and analytic code is provided within the zipped folder "ARPA_Verification"
+Use these codes to recreate analytic and benchmarking results. One of the four codes is a CLI script ("ARPA_Blast_Analysis.py"). For the remaining code, substitute pathways asscociated with your computer into the required subsections and run the code within an IDE (like Spyder). 
+
 
 
 ### Common Errors
-The most common observed arror is the addition of non-".faa" files to the genome directory. Doing so will result in error, and this may be especially true for Mac users, wherein a ".DS_Store" hidden file may be added. Proceed to the directory (use ls -a to see contents of directory) and remove the ".DS_store" file:
+Section in continuous change
+
+The most common observed arror is the addition of non-".faa" files to the genome directory. Doing so will result in error, and this may be especially true for Mac users, wherein a ".DS_Store" hidden file may be added to the folder. Proceed to the directory (use ls -a to see contents of directory) and remove the ".DS_store" file:
   ```
   cd /path/to/folder/having/ARPA_genomes
   rm .DS_Store
