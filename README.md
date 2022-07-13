@@ -6,7 +6,7 @@
 - University of Pennsylvania, Philadelphia, PA 19104, USA
 - Perelman School of Medicine, University of Pennsylvania, Philadelphia, PA 19104, USA
 - Children's Hospital of Philadelphia, Philadelphia, PA 19104, USA
-- Sackler Institute for Comparative Genomics, American Museum of Natural History, New York, NY 10024, USA
+- Institute for Comparative Genomics, American Museum of Natural History, New York, NY 10024, USA
 
 <img width="1128" alt="Screen Shot 2022-05-07 at 2 26 53 678PM" src="https://user-images.githubusercontent.com/66033960/167267136-a3e3d491-bcb0-4f95-8c36-2b286d2f2ddd.png">
 
