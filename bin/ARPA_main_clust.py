@@ -620,20 +620,5 @@ print("Created " +str(c)+" Clusters")
 print(" ")
 print(" ")
 
-from Bio.SeqRecord import SeqRecord
-from Bio.Seq import Seq
-
-with open(os.path.join(RESULTS_FOLDER,"Clusters_seq.faa"), 'w') as out_file_2:
-    c= 0
-    for b in np.arange(len(keep_array)):
-        a = []
-        term = flatten(clusters_checked[keep_array[b]])[0]
-        SeqIO.write(SeqRecord(Seq(seqs[term][0]), id=str(c), name = identity[term][0]), out_file_2, "fasta")
-        c+=1
-
-print("Saved Diamond Input:--- %s seconds ---" % (time.time() - start_time)) 
-print(" ")
-print(" ")
-
 sys.exit()
 
