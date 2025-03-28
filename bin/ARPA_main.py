@@ -696,12 +696,23 @@ if dsp == True:
 ###################################################################
 #%% 
 #Count number of paralogs
+
+
+ini = []
+split_clusters = collections.defaultdict(list)
+identity_clusters = collections.defaultdict(list)
+#sequence_clusters = collections.defaultdict(list)
+index3 = 0
+test_ind_time = 0
+
+
 if dsp == False:
     print("Finding Relevant Paralogs:--- %s seconds ---" % "{:.2f}".format(time.time() - start_time))
     print(" ")
     print(" ") 
     inverted_clusters_checked = dict_inv(clusters_checked,keep_array)
     
+    """
     def Paralog_hunter(test):
         location_dictionary = collections.defaultdict(list)
         for k in np.arange(len(test)):
@@ -719,22 +730,36 @@ if dsp == False:
                         new_val = m + test[k,1] - neighborhood_size - int(genome_lengths[int(test[k,0])])
                         location_dictionary[k].append(inverted_clusters_checked[location[test[k,0]][new_val]][0])
         return location_dictionary 
+    
+    """
+    
+    def Paralog_hunter(test):
+        location_dictionary = collections.defaultdict(list)
+        for k in range(len(test)):
+            genome_number = test[k, 0]
+            protein_location = test[k, 1]
+            genome_length = int(genome_lengths[int(genome_number)])
+            
+            if genome_length < 2*neighborhood_size-0.1:
+                for m in location[genome_number].keys():
+                    protein = location[genome_number][m]
+                    location_dictionary[k].append(inverted_clusters_checked[protein][0])
+            else:
+                for m in range(-neighborhood_size, neighborhood_size + 1):
+                    index = protein_location + m
+        
+                    # Wrap around if index is out of bounds
+                    if index < 0:
+                        index += genome_length
+                    elif index >= genome_length:
+                        index -= genome_length
+        
+                    protein = location[genome_number][index]
+                    location_dictionary[k].append(inverted_clusters_checked[protein][0])
+        return location_dictionary
 
-ini = []
-split_clusters = collections.defaultdict(list)
-identity_clusters = collections.defaultdict(list)
-#sequence_clusters = collections.defaultdict(list)
-index3 = 0
-test_ind_time = 0
-test_values = np.zeros((2000,5))
 
-time_val = []
-size_val = []
-
-
-if dsp == False:
     keep_array2 = []
-    #paralog_array = []
     index = 0
     for b in tqdm(keep_array):
         a = []
