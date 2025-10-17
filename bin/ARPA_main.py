@@ -1234,7 +1234,7 @@ else:
     print("")
     print('ARPA found:')
     print(str(core_acc[-1]) + ' CORE genes      (99% -- 100%)')
-    print(str(core_acc[-2]) + ' SOFT CORE genes (95% -- 100%)')
+    print(str(core_acc[-2]) + ' SOFT CORE genes (95% -- 99%)')
     print(str(core_acc[-3]) + ' SHELL genes     (15% -- 95%)')
     print(str(core_acc[-4]) + ' CLOUD genes     (0% -- 15%)')
     print('-----------------------')
